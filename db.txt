@@ -1,0 +1,6 @@
+CREATE TABLE task(
+id SERIAL PRIMARY KEY,
+task VARCHAR(50),
+status VARCHAR(10)
+);
+INSERT INTO  task("task", "status") VALUES('Do Laundry', 'INCOMPLETE');
