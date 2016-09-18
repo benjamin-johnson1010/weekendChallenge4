@@ -44,5 +44,75 @@ app.route('/newTask')
 });//end /newTask
 app.get('/newTask', urlencodedParser, function(req, res){
   console.log('/newTask get hit');
+  pg.connect(connectionString, function(err, client, done){
+    if(err){
+      console.log(err);
+    }//end if
+    else{
+      var resultsArray = [];
+      //set to show incomplete at top and complete at bottom
+      var query = client.query('SELECT * FROM task ORDER BY status DESC');
+      query.on('row', function(row){
+        resultsArray.push(row);
+      });//end query on row
+      query.on('end',function(){
+        done();
+        return res.send(resultsArray);
+    });
+  }
+});
+});
+app.post('/complete', urlencodedParser, function(req, res){
+  console.log('complete hit');
+  var data ={
+    status: req.body.status,
+    id: req.body.id
+  };
+  pg.connect(connectionString, function(err, client, done){
+    if(err){
+      console.log(err);
+    }//end if
+    else{
+      console.log(data.status);
+      //update task to complete
+      client.query('UPDATE task SET status=($1) WHERE id=($2)',[data.status, data.id]);
+       var query = client.query('SELECT * FROM task ORDER BY status DESC');
+       console.log(query);
+      var resultsArray = [];
+      query.on('row', function(row){
+        resultsArray.push(row);
+      });
+      query.on('end', function(){
+        done();
+        return res.send(resultsArray);
+      });
+    }
+});
+});
+app.post('/delete', urlencodedParser, function(req, res){
+  console.log('delete hit');
+  var data ={
+    id: req.body.id
+  };
+    pg.connect(connectionString, function(err, client, done){
+    if(err){
+      console.log(err);
+    }//end if
+    else{
+      console.log(data.id);
+      //update task to complete
+      client.query('DELETE FROM task WHERE id=$1',[data.id]);
+       var query = client.query('SELECT * FROM task ORDER BY status DESC');
+       console.log(query);
+      var resultsArray = [];
+      query.on('row', function(row){
+        resultsArray.push(row);
+      });
+      query.on('end', function(){
+        done();
+        return res.send(resultsArray);
+      });
+    }
+});
 });
 app.use(express.static('public'));

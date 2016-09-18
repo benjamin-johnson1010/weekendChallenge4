@@ -1,0 +1,16 @@
+body{
+  background-color: tan;
+  text-align: center;
+  font-family: Helvetica, sans-serif
+}
+
+.completeButton{
+  background-color: green;
+}
+.deleteButton{
+  background-color: red;
+}
+
+.yellow{
+  color: blue;
+}
